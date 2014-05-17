@@ -56,7 +56,6 @@ responseData delete_file(char *conf_filename, char *file_name)
 			result, STRERROR(result));
 		res.msg="delete file fail";
 		res.result=0;
-		return res;
 	}
 
 	res.msg="delete file success";

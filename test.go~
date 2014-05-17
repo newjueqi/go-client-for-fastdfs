@@ -92,10 +92,10 @@ func FdfsDeleteFile(conf string,fileId string)(result map[string]interface{},err
 func main(){
 
    //上传文件
-   //str,err:=FdfsUploadFile("/etc/fdfs/client.conf","README.md")
+   str,err:=FdfsUploadFile("/etc/fdfs/client.conf","README.md")
    
    //删除文件
-   str,err:=FdfsDeleteFile("/etc/fdfs/client.conf","group1/M00/00/01/wKgBP1N26sD3333335g63rAAAFcd0RcrU7478.md")
+//   str,err:=FdfsDeleteFile("/etc/fdfs/client.conf","group1/M00/00/01/wKgBP1N11RTg6-hYAABJuZk6wJM515.jpg")
    fmt.Println("file upload result:",str)
    fmt.Println("file upload err:",err)
    
