@@ -26,6 +26,7 @@ import "fmt"
 import "path/filepath"
 import "strings"
 import "errors"
+import "unsafe"
 
 //上传文件到fdfs
 //conf:配置文件的文件,example:/etc/fdfs/client.conf
@@ -33,7 +34,13 @@ import "errors"
 func FdfsUploadFile(conf string,imagePath string)(result map[string]interface{},err error){
 	
     result = make(map[string]interface{})
-    var resData C.responseData=C.upload_file(C.CString(conf),C.CString(imagePath));
+    
+    
+    c_conf:=C.CString(conf);
+	c_imagePath:=C.CString(imagePath);
+	var resData C.responseData = C.upload_file(c_conf, c_imagePath)
+	defer C.free(unsafe.Pointer(c_conf))
+	defer C.free(unsafe.Pointer(c_imagePath))
     
     fmt.Println("upload file msg:", C.GoString(resData.msg)) ////当成功的时候，是返回图片的id,example:group1/M00/00/00/wKgBP1NxvSqH9qNuAAAED6CzHYE179.jpg ,当失败的时候是返回错误消息
     fmt.Println("upload file result:", resData.result) //１表示成功，０表示失败
@@ -73,7 +80,12 @@ func FdfsUploadFile(conf string,imagePath string)(result map[string]interface{},
 func FdfsDeleteFile(conf string,fileId string)(result map[string]interface{},err error){
 
     result = make(map[string]interface{})
-    var resData C.responseData=C.delete_file(C.CString(conf),C.CString(fileId));
+    
+    c_conf:=C.CString(conf);
+	c_fileId:=C.CString(fileId);
+	var resData C.responseData=C.delete_file(c_conf,c_fileId);
+	defer C.free(unsafe.Pointer(c_conf))
+	defer C.free(unsafe.Pointer(c_fileId))    
     
     fmt.Println("upload file msg:", C.GoString(resData.msg)) ////当成功的时候，是返回图片的id,example:group1/M00/00/00/wKgBP1NxvSqH9qNuAAAED6CzHYE179.jpg ,当失败的时候是返回错误消息
     fmt.Println("upload file result:", resData.result) //１表示成功，０表示失败
@@ -92,10 +104,10 @@ func FdfsDeleteFile(conf string,fileId string)(result map[string]interface{},err
 func main(){
 
    //上传文件
-   //str,err:=FdfsUploadFile("/etc/fdfs/client.conf","README.md")
+   str,err:=FdfsUploadFile("/etc/fdfs/client.conf","/root/Desktop/myPicture.jpg")
    
    //删除文件
-   str,err:=FdfsDeleteFile("/etc/fdfs/client.conf","group1/M00/00/01/wKgBP1N26sD3333335g63rAAAFcd0RcrU7478.md")
+//   str,err:=FdfsDeleteFile("/etc/fdfs/client.conf","group1/M00/01/8C/wKgBP1Oqm7mxUiDyAAHGYsmKRjk055.jpg")
    fmt.Println("file upload result:",str)
    fmt.Println("file upload err:",err)
    
